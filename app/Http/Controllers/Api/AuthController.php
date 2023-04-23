@@ -53,17 +53,18 @@ class AuthController extends Controller
             if ($user && $profile) {
                 $email = new ConfirmMailable($token, $profile['name']);
                 Mail::to($user->email)->send($email);
+
                 return response()->json([
                     'success' => true,
-                    'message' => 'Se ha registrado correctamente.',
+                    'message' => 'Registro exitoso. Por favor, revise su correo electrónico para confirmar su cuenta.',
                     'token' => $user->createToken('register token', ['*'], now()->addDays(31))->plainTextToken
                 ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Parece que se ha producido un error al registrarse, inténtelo de nuevo más tarde...'
-                ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo registrar al usuario. Por favor, inténtelo de nuevo más tarde.'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -85,14 +86,14 @@ class AuthController extends Controller
             if (!$user || $user->status === 0) {
                 return response()->json([
                     'success' => false,
-                    'message' => "El usuario no está registrado..."
+                    'message' => "El usuario no está registrado."
                 ]);
             }
 
             if (!$user->verified) {
                 return response()->json([
                     'success' => false,
-                    'message' => "Al parecer aun no a verificado su cuenta, por favor verifique su correo electrónico..."
+                    'message' => "Aún no ha verificado su cuenta de correo electrónico. Por favor, revise su bandeja de entrada y verifique su cuenta."
                 ]);
             }
 
@@ -105,12 +106,12 @@ class AuthController extends Controller
                     'token' => $user->createToken('login token', ['*'], now()->addDays(31))->plainTextToken,
                     'message' => 'Ha iniciado sesión correctamente.'
                 ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'La dirección de correo electrónico o la contraseña no son válidas.'
-                ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'La dirección de correo electrónico o la contraseña no son válidas.'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -128,7 +129,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Ha cerrado correctamente la sesión.'
+                'message' => 'La sesión ha sido cerrada exitosamente. ¡Esperamos verte pronto de nuevo!'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -147,7 +148,7 @@ class AuthController extends Controller
             if ($user->status !== 1) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'El usuario no se encuentra activo.'
+                    'message' => 'Lo sentimos, su cuenta está inactiva. Por favor, póngase en contacto con el administrador para obtener más información.'
                 ], 401);
             }
 
@@ -187,7 +188,7 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json([
                     'success' => false,
-                    'message' => "El usuario no está registrado..."
+                    'message' => "No se encontró un usuario registrado con esa dirección de correo electrónico. Por favor, regístrese para continuar."
                 ]);
             }
 
@@ -204,7 +205,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Se ha enviado un email de restablecimiento de contraseña a su correo electrónico. Por favor revise su bandeja de entrada.',
+                'message' => 'Se ha enviado un email de restablecimiento de contraseña a su correo electrónico. Por favor revise su bandeja de entrada. Si no lo recibe en los próximos minutos, revise su carpeta de correo no deseado.'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -234,7 +235,7 @@ class AuthController extends Controller
             if ($response !== Password::PASSWORD_RESET) {
                 return response()->json([
                     'success' => false,
-                    'message' => "No se ha podido restablecer la contraseña, inténtelo de nuevo...",
+                    'message' => "No se ha podido restablecer la contraseña. Por favor, revise que la dirección de correo electrónico sea correcta y vuelva a intentarlo.",
                 ]);
             }
 
@@ -242,7 +243,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Ha restablecido correctamente su contraseña. Ahora puede iniciar sesión.',
+                'message' => 'Se ha restablecido correctamente su contraseña. Ahora puede iniciar sesión.',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -262,6 +263,8 @@ class AuthController extends Controller
                 $user->verify_token = null;
                 $user->markEmailAsVerified();
                 $user->save();
+
+                Cache::forget('user:' . $user->id);
 
                 return redirect('http://localhost:5173/', 301);
             } else {

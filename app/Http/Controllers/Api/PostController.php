@@ -96,7 +96,7 @@ class PostController extends Controller
             if ($post = Post::where('slug', $input['slug'])->first()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Este post ya existe. Pruebe con otro título.'
+                    'message' => 'Lo sentimos, no se pudo crear el post. Ya existe otro post con el mismo título, por favor intente con otro título.'
                 ]);
             }
 
@@ -120,12 +120,12 @@ class PostController extends Controller
                     'success' => true,
                     'message' => 'El post se ha creado correctamente.'
                 ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Parece que se ha producido un error al crear el post, inténtelo de nuevo más tarde...'
-                ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Lo sentimos, ha ocurrido un error técnico al crear el post. Por favor, inténtelo de nuevo más tarde.'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -143,7 +143,7 @@ class PostController extends Controller
             if (!$post) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se encontró el post solicitado.'
+                    'message' => 'Lo siento, no se encontró el post solicitado.'
                 ]);
             }
 
@@ -169,7 +169,7 @@ class PostController extends Controller
             if (!$post) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se encontró el post solicitado o no tiene permiso para editarlo.'
+                    'message' => 'No se encontró el post solicitado o no tiene permiso para editarlo. Asegúrese de que el post existe y que está autorizado a editarlo.'
                 ]);
             }
 
@@ -204,14 +204,14 @@ class PostController extends Controller
             if ($post->save()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'El post se ha actualizado correctamente.'
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Parece que se ha producido un error al actualizar el post, inténtelo de nuevo más tarde...'
+                    'message' => '¡El post se ha actualizado exitosamente!'
                 ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Lo siento, ha habido un error al actualizar el post. Por favor, intenta de nuevo más tarde.'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -229,7 +229,7 @@ class PostController extends Controller
             if (!$post) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se encontró el post solicitado o no tiene permiso para eliminarlo.'
+                    'message' => 'No se encontró el post solicitado o no tiene permiso para eliminarlo. Asegúrese de que el post existe y que está autorizado a eliminarlo.'
                 ]);
             }
 
@@ -238,7 +238,7 @@ class PostController extends Controller
             if ($post->save()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'El post se ha eliminado correctamente.'
+                    'message' => '¡El post se ha eliminado exitosamente!'
                 ]);
             }
         } catch (\Throwable $th) {
@@ -286,16 +286,9 @@ class PostController extends Controller
         try {
             $user = $request->user();
 
-            if ($user->show_nsfw) {
-                $posts = $user->posts()
-                    ->where('status', '!=', 0)
-                    ->get();
-            } else {
-                $posts = $user->posts()
-                    ->where('status', '!=', 0)
-                    ->where('nsfw', 0)
-                    ->get();
-            }
+            $posts = $user->posts()
+                ->where('status', '!=', 0)
+                ->get();
 
             return response()->json([
                 'success' => true,
@@ -318,7 +311,7 @@ class PostController extends Controller
             if (!$post) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se encontró el post solicitado.'
+                    'message' => 'Lo siento, no se encontró el post solicitado.'
                 ]);
             }
 
@@ -333,7 +326,7 @@ class PostController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Agregado a favoritos.'
+                    'message' => 'El post se a agregado a favoritos.'
                 ]);
             } else {
                 $like->like = !$like->like;
