@@ -55,7 +55,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Datos del perfil actualizados correctamente.'
+                'message' => 'Se han actualizado correctamente los datos de perfil.'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -162,7 +162,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Su cuenta se a eliminado correctamente, para volver a activar la cuenta deberá ponerse en contacto con soporte técnico.'
+                'message' => 'Su cuenta (' . $user->email . ') se ha eliminado correctamente. Si desea volver a utilizar nuestros servicios, póngase en contacto con el soporte técnico para reactivar su cuenta.',
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
