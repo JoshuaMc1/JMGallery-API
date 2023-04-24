@@ -26,7 +26,8 @@ class AuthController extends Controller
             $validateData = Validator::make($request->all(), [
                 'email' => ['required', 'email', 'unique:users,email,' . $request->id],
                 'password' => ['required', 'confirmed', 'min:8'],
-                'name' => ['required', 'min:4', 'max:50']
+                'name' => ['required', 'min:4', 'max:50'],
+                'birthday' => ['required', 'date'],
             ]);
 
             if ($validateData->fails()) {
@@ -46,6 +47,7 @@ class AuthController extends Controller
             $profile = Profile::create([
                 'user_id' => $user->id,
                 'name' => $input['name'],
+                'birthday' => $input['birthday'],
                 'profile' => null,
                 'description' => null
             ]);

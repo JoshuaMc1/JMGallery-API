@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description')->nullable();
             $table->string('profile')->nullable();
+            $table->date('birthday')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
