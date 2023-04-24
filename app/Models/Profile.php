@@ -13,6 +13,7 @@ class Profile extends Model
         'name',
         'profile',
         'description',
+        'birthday',
         'user_id',
     ];
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Carbon;
 
 class ProfileController extends Controller
 {
@@ -113,6 +114,7 @@ class ProfileController extends Controller
         try {
             $user = $request->user();
             Cache::forget('user:' . $user->id);
+            $age = Carbon::parse($user->profile->birthday)->age;
 
             $validateData = Validator::make($request->all(), [
                 'nsfw' => ['required', 'boolean'],
@@ -122,6 +124,13 @@ class ProfileController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => $validateData->errors()
+                ]);
+            }
+
+            if ($age < 18) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Para cambiar la configuración de NSFW, debe ser mayor de edad.'
                 ]);
             }
 
