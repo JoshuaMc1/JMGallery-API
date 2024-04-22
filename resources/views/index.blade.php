@@ -9,7 +9,7 @@
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="JMGalleryAPI, JMGallery, API REST, Free Photos, Free Gallery, Pics, Pictures">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="{{ asset('storage/web/logo.svg') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="https://jmgallery.netlify.app/logo.svg" type="image/x-icon">
     <title>JMGallery - API</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -19,7 +19,9 @@
         <x-navbar />
     </header>
     <main class="container my-6">
-
+        @php
+            header('Redirect: https://jmgallery.netlify.app');
+        @endphp
     </main>
     <footer>
 

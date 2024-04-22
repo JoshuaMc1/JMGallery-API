@@ -333,7 +333,7 @@ a {text-decoration: none;}
                                                             style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                                                             <tr style="border-collapse:collapse">
                                                                 <th style="display: flex; justify-content:center">
-                                                                    <img src="http://jmgallery.test/storage/logo.svg"
+                                                                    <img src="https://jmgallery.netlify.app/logo.svg"
                                                                         alt="JMGallery Logo"
                                                                         style="width: 50px; height: auto;">
                                                                     <p>JMProjects</p>
